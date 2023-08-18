@@ -12,7 +12,7 @@ def Search():
       billarea.delete('1.0','end')
       fullpath=""
       file=f"{customer_details_list[2].get()}.txt"
-      rootdir="C:\\Users\\ROHIT KHETO"
+      rootdir="C:\\Users"
       for relPath,dirs,files in os.walk(rootdir):
          if(file in files):
             fullpath=os.path.join(rootdir,relPath,file)
