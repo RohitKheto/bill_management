@@ -38,14 +38,14 @@ def save():
  
 def receipt():
    billarea.delete("1.0","end")
-   global r
-   r=random.randint(1000,9999)
-   Date=date.today()
-   time=datetime.now()
-   time=time.strftime("%H:%M:%S")
    if (customer_details_list[0].get())=='' or (customer_details_list[1].get())=='':
       tmsg.showinfo('Incomplete',"Please enter customer details")
    else:
+      global r
+      r=random.randint(1000,9999)
+      Date=date.today()
+      time=datetime.now()
+      time=time.strftime("%H:%M:%S")
       t=f'''Receipt Ref.             Bill No. : {r}               {Date} 
                                                                           {time}
 *****************************************************
