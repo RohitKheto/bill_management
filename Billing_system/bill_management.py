@@ -4,29 +4,36 @@ import tkinter.messagebox as tmsg
 import random
 from datetime import date,datetime
 import os
+from tkinter import filedialog
 
-
-global r
-
+r=""
 
 def Search():
       billarea.delete('1.0','end')
-      if(os.path.exists(f"{customer_details_list[2].get()}.txt")):
-         with open(f"{customer_details_list[2].get()}.txt","r") as f:
-            t=f.read()
-            billarea.insert(END,t)  
+      fullpath=""
+      file=f"{customer_details_list[2].get()}.txt"
+      rootdir="C:\\Users\\ROHIT KHETO"
+      for relPath,dirs,files in os.walk(rootdir):
+         if(file in files):
+            fullpath=os.path.join(rootdir,relPath,file)
+
+      if(fullpath==""):
+         tmsg.showerror('Unknown',"This bill no. is not exist")
       else:
-         tmsg.showerror('Unknown',"This bill no. does not exist")
-         customer_details_list[2].delete(0,END)
-
-
+         with open(fullpath,"r") as f:
+            t=f.read()
+            billarea.insert(END,t)
+         
 
 def save():
-   t=billarea.get('1.0','end')
-   with open(f"{r}.txt","w") as f:
+   global r
+   if(r==""):
+      pass
+   else:
+      t=billarea.get('1.0','end')
+      f= filedialog.asksaveasfile(defaultextension=".txt",filetypes=[("Text file","*.txt"),("PDF","*.pdf"),("All files","*.*")],initialdir='C:\\Users\\ROHIT KHETO\\Downloads',initialfile=r)
       f.write(t)
-   t=tmsg.showinfo("Save","This receipt is saved")
-   
+      f.close()
 
  
 def receipt():
@@ -38,16 +45,13 @@ def receipt():
    time=time.strftime("%H:%M:%S")
    if (customer_details_list[0].get())=='' or (customer_details_list[1].get())=='':
       tmsg.showinfo('Incomplete',"Please enter customer details")
-   elif(customer_details_list[1].get().isdigit() == False):
-      tmsg.showinfo('contact details',"Please enter valid contact no.")
-      customer_details_list[1].delete(0,END)
    else:
       t=f'''Receipt Ref.             Bill No. : {r}               {Date} 
                                                                           {time}
 *****************************************************
                            FAST  FOOD  CENTER
                         Contact  No.  :  9867125621
-                  Chingrighata, E M Bypass, Canal S Rd
+
 *****************************************************
 Customer Name  :  {customer_details_list[0].get()}
 Contact No.  :  {customer_details_list[1].get()}
@@ -80,7 +84,6 @@ Product                                   Qty                  Price
       billarea.insert(END,t)
 
 
-
 def total():
    for i in range(0,6):
          summary_entry[i].delete(0,END)
@@ -111,7 +114,6 @@ def total():
    summary_entry[5].insert(0,f'Rs. {total_cost}')
 
 
-
 def clear():
    t=tmsg.askyesno("Clear","Are you sure you want to clear all data ?")
    if t:
@@ -130,7 +132,6 @@ def clear():
          summary_entry[i].delete(0,END)
          summary_entry[i].insert(0,'Rs. 0')
       billarea.delete('1.0','end')
-
 
 
 def exit_button():
@@ -196,8 +197,7 @@ f3=Frame(root,borderwidth=5,relief=RIDGE)
 f3.pack()
 Item=['Chowmein','Roll','Soup']
 for i in range(0,3):
-   Item[i]=LabelFrame(f3,text=Item[i],fg='red3',borderwidth=5,relief=RIDGE,font=("Book Antiqua", 14 ,"bold"),
-                      bg="LightBlue1",highlightbackground="midnight blue",highlightthickness=3)
+   Item[i]=LabelFrame(f3,text=Item[i],fg='red3',borderwidth=5,relief=RIDGE,font=("Book Antiqua", 14 ,"bold"),bg="LightBlue1",highlightbackground="midnight blue",highlightthickness=3)
    Item[i].grid(row=0,column=i)
    Label(Item[i],fg="red2",text='Item',font=("Book Antiqua", 14 ,"bold",'underline'),bg="LightBlue1").grid(row=0,column=0,pady=10)
    Label(Item[i],fg="red2",text='Price',font=("Book Antiqua", 14 ,"bold",'underline'),bg="LightBlue1").grid(row=0,column=1,pady=10)
